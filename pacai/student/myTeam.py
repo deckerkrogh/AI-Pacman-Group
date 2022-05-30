@@ -2,8 +2,11 @@ from pacai.util import reflection
 from pacai.agents.capture.offense import OffensiveReflexAgent
 from pacai.agents.capture.defense import DefensiveReflexAgent
 from pacai.core.directions import Directions
-from pacai.agents.capture import CaptureAgent
+from pacai.agents.capture.capture import CaptureAgent
 import sys
+import abc
+
+from pacai.core.search.position import PositionSearchProblem
 
 
 
@@ -24,6 +27,23 @@ class FeatureExtractor(abc.ABC):
         """
 
         pass
+
+
+class AnyFoodSearchProblem(PositionSearchProblem):
+    """
+    Required by SimpleExtractor.
+    """
+
+
+    def __init__(self, gameState, start = None):
+        super().__init__(gameState, goal = None, start = start)
+
+        # Store the food for later reference.
+        self.food = gameState.getFood()
+
+    def isGoal(self, state):
+        return state in self.food.asList()
+
 
 class SimpleExtractor(FeatureExtractor):
     """
@@ -65,12 +85,7 @@ class SimpleExtractor(FeatureExtractor):
 
 
 
-
-
-
-
-
-
+# Agents ---------------------------------------------------------------------
 
 class OffensiveAgent(OffensiveReflexAgent):
     def __init__(self, index):
